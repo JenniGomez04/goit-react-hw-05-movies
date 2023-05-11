@@ -30,7 +30,7 @@ export const ContainerInput = styled.div`
     }
 
     li{
-      font-size: 14px;
+      font-size: 17px;
     }
 
 `;

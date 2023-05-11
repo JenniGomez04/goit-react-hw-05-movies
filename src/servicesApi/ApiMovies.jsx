@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 //const BASE_URL = 'https://api.themoviedb.org/3/';
-const API_KEY = 'ea073995e4db72262db9a5039068ed8d';
+const API_KEY = 'd2c1d24020287e7b546fb1f2d1960a86';
+
 
 
 //LISTA DE PELICULAS POPULARES
@@ -34,6 +35,3 @@ export const getMovieReviews = async (movieId) => {
   const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}`);
   return response.data.results;
 };
-
-
-

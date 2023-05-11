@@ -1,4 +1,4 @@
-/*import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'servicesApi/ApiMovies';
 
@@ -15,7 +15,7 @@ const Reviews = () => {
   }, [movieId]);
 
   if (!reviews) {
-    return <div>Cargando...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
@@ -25,11 +25,10 @@ const Reviews = () => {
         <div key={review.id}>
           <p>Autor: {review.author}</p>
           <p>Contenido: {review.content}</p>
-          <p>Fecha de publicación: {review.created_at}</p>
         </div>
       ))}
     </div>
   );
 };
 
-export default Reviews;*/
+export default Reviews;

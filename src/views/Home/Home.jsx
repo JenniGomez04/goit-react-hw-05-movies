@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getTrendingMovies } from 'servicesApi/ApiMovies';
 import { Link } from 'react-router-dom';
 import {ContenedorHome} from './Home.styled';
+import MovieDetails from 'views/MovieDetails/MovieDetails';
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
@@ -24,7 +25,8 @@ const Home = () => {
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
-            <Link to={`/movies/${movie.id}`}>{movie.title}</Link>
+            <Link to={`/moviesdetails/${movie.id}`}>{movie.title}
+            </Link>
           </li>
         ))}
       </ul>
