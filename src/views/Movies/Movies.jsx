@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useState } from 'react';
 import { searchMovies } from 'servicesApi/ApiMovies';
 import { ContainerInput } from './Movies.styled';
@@ -35,6 +36,19 @@ const Movies = () => {
     </ContainerInput>
   );
 };
+
+
+Movies.propTypes = {
+  searchTerm: PropTypes.string,
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+      title: PropTypes.string,
+      name: PropTypes.string,
+    })
+  ),
+};
+
 
 export default Movies;
 

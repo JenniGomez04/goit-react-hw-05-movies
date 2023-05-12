@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from 'react';
 import { useParams, NavLink, Link } from 'react-router-dom';
 import { ContainerMovieDetails, ContainerG, ContainerOne, ContainerTwo,
@@ -79,6 +80,11 @@ const MovieDetails = () => {
       </ContainerInformation>
     </ContainerMovieDetails>
   );
+};
+
+MovieDetails.propTypes = {
+  prop1: PropTypes.string,
+  prop2: PropTypes.number
 };
 
 export default MovieDetails;
