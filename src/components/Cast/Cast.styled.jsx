@@ -21,8 +21,12 @@ export const Li = styled.li`
     border-radius: 4px;
   }
 
-  p {
+  h3{
     font-size: 16px;
+  }
+
+  p {
+    font-size: 14px;
     margin: 0;
     padding: 0;
   }

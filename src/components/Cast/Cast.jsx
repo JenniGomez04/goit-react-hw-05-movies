@@ -45,7 +45,7 @@ const Cast = () => {
               <Li key={id}>
                 <img src={profileImg} alt={name} />
                 <div>
-                  <p>{name}</p>
+                  <h3>{name}</h3>
                   <p>Character: {character}</p>
                 </div>
               </Li>

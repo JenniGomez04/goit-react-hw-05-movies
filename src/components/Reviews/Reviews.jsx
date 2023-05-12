@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'servicesApi/ApiMovies';
+import {MessageReviews, ContainerReviews } from './Reviews.styled';
 
 const Reviews = () => {
   const [reviews, setReviews] = useState(null);
@@ -18,16 +19,19 @@ const Reviews = () => {
     return <div>Loading...</div>;
   }
 
+  if (reviews.length === 0) {
+    return <MessageReviews >We don't have any reviews for this movie.</MessageReviews >;
+  }
+
   return (
-    <div>
-      <h2>Críticas</h2>
+    <ContainerReviews>
       {reviews.map((review) => (
         <div key={review.id}>
-          <p>Autor: {review.author}</p>
-          <p>Contenido: {review.content}</p>
+          <h3>Autor: {review.author}</h3>
+          <p>{review.content}</p>
         </div>
       ))}
-    </div>
+    </ContainerReviews>
   );
 };
 

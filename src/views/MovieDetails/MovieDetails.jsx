@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, NavLink } from 'react-router-dom';
-import { ContainerMovieDetails, ContainerDetailsMov, ContainerInformation } from './MovieDetails.styled';
+import { useParams, NavLink, Link } from 'react-router-dom';
+import { ContainerMovieDetails, ContainerG, ContainerOne, ContainerTwo,
+          ContainerGenres, ContainerInformation } from './MovieDetails.styled';
 
 const MovieDetails = () => {
   const [movie, setMovie] = useState(null);
+  const [activeTab, setActiveTab] = useState('reviews');
 
   const { id } = useParams();
 
@@ -20,35 +22,60 @@ const MovieDetails = () => {
 
   return (
     <ContainerMovieDetails>
+     <ContainerG>
+
+      <ContainerOne>
       <NavLink to="/"> ↶ Go Back</NavLink>
       <img
         src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
         alt={movie.title}
       />
-      <ContainerDetailsMov>
-      <h2>
-        {movie.title} ({movie.release_date.slice(0, 4)})
-      </h2>
-      <p>User Score: {movie.popularity}</p>
-      <div className="movieDetailsOverview">
-        <h3>Overview</h3>
-        <p>{movie.overview}</p>
-      </div>
-      <ul>
-        <h2>Genres</h2>
-        {movie.genres &&
-          movie.genres.map((genre) => (
+      </ContainerOne>
+
+      <ContainerTwo>
+        <h2>
+          {movie.title} ({movie.release_date.slice(0, 4)})
+        </h2>
+          <p>User Score: {movie.vote_average}%</p>
+        <div>
+          <h3>Overview</h3>
+          <p>{movie.overview}</p>
+       </div>
+       <ContainerGenres>
+       <h2>Genres</h2>
+        <ul>
+          {movie.genres &&
+            movie.genres.map((genre) => (
             <li key={genre.id}>{genre.name}</li>
           ))}
-      </ul>
-      </ContainerDetailsMov>
+        </ul>
+      </ContainerGenres>
+
+      </ContainerTwo>
+      </ContainerG>
 
       <ContainerInformation>
-        <h2>Additional Information</h2>
-
-        <NavLink to={`/movies/${movie.id}/reviews`}>Reviews</NavLink>
-        <NavLink to={`/movies/${movie.id}/cast`}>Cast</NavLink>
-        
+          <h2>Additional Information</h2>
+          <ul>
+          <li>
+            <Link
+              to={`/movies/${movie.id}/cast`}
+              className={activeTab === 'cast' ? 'active' : ''}
+              onClick={() => setActiveTab('cast')}
+            >
+              Cast
+            </Link>
+          </li>
+          <li>
+            <Link
+              to={`/movies/${movie.id}/reviews`}
+              className={activeTab === 'reviews' ? 'active' : ''}
+              onClick={() => setActiveTab('reviews')}
+            >
+              Reviews
+            </Link>
+          </li>
+        </ul>
       </ContainerInformation>
     </ContainerMovieDetails>
   );
