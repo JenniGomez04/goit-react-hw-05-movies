@@ -1,45 +1,63 @@
-import PropTypes from 'prop-types';
+
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'servicesApi/ApiMovies';
-import {MessageReviews, ContainerReviews } from './Reviews.styled';
+import { ContainerReviews } from './Reviews.styled';
 
 
 const Reviews = () => {
+  const { id } = useParams();
   const [reviews, setReviews] = useState(null);
-  const { movieId } = useParams();
+  const [loading, setLoading] = useState(true);
+
+
 
   useEffect(() => {
     const fetchMovieReviews = async () => {
-      const movieReviews = await getMovieReviews(movieId);
+      const movieReviews = await getMovieReviews(id);
       setReviews(movieReviews);
     };
     fetchMovieReviews();
-  }, [movieId]);
+  }, [id]);
 
-  if (!reviews) {
-    return <div>Loading...</div>;
-  }
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const { results } = await getMovieReviews(id);
+        setReviews(results);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getData();
+  }, [id]);
 
-  if (reviews.length === 0) {
-    return <MessageReviews >We don't have any reviews for this movie.</MessageReviews >;
-  }
 
   return (
+    <>
+      {loading ? (
+        'Loading...'
+      ) : reviews && reviews.length > 0 ? (
     <ContainerReviews>
-      {reviews.map((review) => (
-        <div key={review.id}>
-          <h3>Autor: {review.author}</h3>
-          <p>{review.content}</p>
+
+      {reviews.map(({id,author,content}) => (
+        <div key={id}>
+          <h3>Autor: {author}</h3>
+          <p>{content}</p>
         </div>
       ))}
     </ContainerReviews>
+     ) : (
+        <p >No reviews found</p>
+      )}
+    </>
   );
 };
 
 
-Reviews.propTypes = {
-  movieId: PropTypes.string.isRequired,
-};
-
 export default Reviews;
+

@@ -1,11 +1,10 @@
-import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieCredits } from 'servicesApi/ApiMovies';
 import { Ul, Li } from './Cast.styled';
 
 const Cast = () => {
-  const { movieId } = useParams();
+  const { id } = useParams();
 
   const [cast, setCast] = useState([]);
   const [error, setError] = useState(null);
@@ -15,7 +14,7 @@ const Cast = () => {
     const fetchCast = async () => {
       try {
         setLoading(true);
-        const response = await getMovieCredits(movieId);
+        const response = await getMovieCredits(id);
         setCast(response);
       } catch (error) {
         console.error('Something went wrong with fetching cast on movie page', error);
@@ -25,7 +24,7 @@ const Cast = () => {
       }
     };
     fetchCast();
-  }, [movieId]);
+  }, [id]);
 
   return (
     <div>
@@ -66,9 +65,6 @@ const Cast = () => {
   );
 };
 
-Cast.propTypes = {
-  movieId: PropTypes.string.isRequired,
-}
 
 export default Cast;
 

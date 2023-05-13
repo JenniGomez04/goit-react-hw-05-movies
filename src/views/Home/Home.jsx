@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getTrendingMovies } from 'servicesApi/ApiMovies';
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import {ContenedorHome} from './Home.styled';
-import MovieDetails from 'views/MovieDetails/MovieDetails';
+//import MovieDetails from 'views/MovieDetails/MovieDetails';
 
 const Home = () => {
   const [movies, setMovies] = useState([]);
-
+ const location = useLocation();
   // Fn UseEffect se ejecuta una sola vez
 
   useEffect(() => {
@@ -25,7 +25,9 @@ const Home = () => {
       <ul>
         {movies.map((movie) => (
           <li key={movie.id}>
-            <Link to={`/moviesdetails/${movie.id}`}>{movie.title}
+            <Link     to={`/movies/${movie.id}`}
+                  state={{ from: location }} >
+                  {movie.title}
             </Link>
           </li>
         ))}

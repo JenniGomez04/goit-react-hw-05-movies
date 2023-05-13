@@ -1,37 +1,59 @@
 import axios from 'axios';
 
-//const BASE_URL = 'https://api.themoviedb.org/3/';
-const API_KEY = 'd2c1d24020287e7b546fb1f2d1960a86';
+const instance = axios.create({
+  baseURL: 'https://api.themoviedb.org/3',
+  params: {
+    api_key: 'd2c1d24020287e7b546fb1f2d1960a86',
+    language: 'en-US',
+  },
+});
 
+export async function getTrendingMovies() {
+  const query = `/trending/movie/week`;
+  try {
+    const { data } = await instance.get(query);
+    return data.results;
+  } catch (error) {
+    throw error;
+  }
+}
 
+export async function getMovieDetails(id) {
+  const query = `/movie/${id}`;
+  try {
+    const { data } = await instance.get(query);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
-//LISTA DE PELICULAS POPULARES
-export const getTrendingMovies = async () => {
-  const response = await axios.get(`https://api.themoviedb.org/3/trending/movie/week?api_key=${API_KEY}`);
-  return response.data.results;
-};
+export async function getMovieCredits(id) {
+  const query = `/movie/${id}/credits`;
+  try {
+    const { data } = await instance.get(query);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
-// Resultado de busqueda que coincide con el query
-export const searchMovies = async (query) => {
-  const response = await axios.get(`https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`);
-  console.log(response.data.results);
-  return response.data.results;
-};
+export async function getMovieReviews(id) {
+  const query = `/movie/${id}/reviews`;
+  try {
+    const { data } = await instance.get(query);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}
 
-// Detalles de la pelicula, fecha de lanzamiento, titulo, sipnosis, genero etc.
-export const getMovieDetails = async (movieId) => {
-  const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}`);
-  return response.data;
-};
-
-// Información sobre los actores de la pelicula buscada
-export const getMovieCredits = async (movieId) => {
-  const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}`);
-  return response.data.cast;
-};
-
-// Información de criticas y fecha en la que se publico
-export const getMovieReviews = async (movieId) => {
-  const response = await axios.get(`https://api.themoviedb.org/3/movie/${movieId}/reviews?api_key=${API_KEY}`);
-  return response.data.results;
-};
+export async function searchMovies(queryString) {
+  const query = `/search/movie?query=${queryString}`;
+  try {
+    const { data } = await instance.get(query);
+    return data;
+  } catch (error) {
+    throw error;
+  }
+}

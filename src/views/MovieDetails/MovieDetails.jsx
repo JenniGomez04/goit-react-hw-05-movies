@@ -1,95 +1,99 @@
-import PropTypes from 'prop-types';
-import React, { useState, useEffect } from 'react';
-import { useParams, NavLink, Link } from 'react-router-dom';
-import { ContainerMovieDetails, ContainerG, ContainerOne, ContainerTwo,
-          ContainerGenres, ContainerInformation } from './MovieDetails.styled';
+import { useParams, Link, Outlet, useLocation } from 'react-router-dom';
+import { useState, useEffect, Suspense } from 'react';
+import { getMovieDetails } from '../../servicesApi/ApiMovies';
+
 
 const MovieDetails = () => {
-  const [movie, setMovie] = useState(null);
-  const [activeTab, setActiveTab] = useState('reviews');
+  const { movieId } = useParams();
 
-  const { id } = useParams();
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMovieDetails = async () => {
-      const response = await fetch(`https://api.themoviedb.org/3/movie/${id}?api_key=d2c1d24020287e7b546fb1f2d1960a86`);
-      const movieData = await response.json();
-      setMovie(movieData);
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const data = await getMovieDetails(movieId);
+        setData(data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchMovieDetails();
-  }, [id]);
+    getData();
+  }, [movieId]);
 
-  if (!movie) return <div>Loading...</div>;
+  const getYear = releaseDate => {
+    const date = new Date(releaseDate);
+    return date.getFullYear();
+  };
 
-  return (
-    <ContainerMovieDetails>
-     <ContainerG>
+  const getGenres = arrGenres => {
+    return arrGenres.map(genre => genre.name).join(', ');
+  };
 
-      <ContainerOne>
-      <NavLink to="/"> ↶ Go Back</NavLink>
-      <img
-        src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-        alt={movie.title}
-      />
-      </ContainerOne>
+  const location = useLocation();
 
-      <ContainerTwo>
-        <h2>
-          {movie.title} ({movie.release_date.slice(0, 4)})
-        </h2>
-          <p>User Score: {movie.vote_average}%</p>
-        <div>
-          <h3>Overview</h3>
-          <p>{movie.overview}</p>
-       </div>
-       <ContainerGenres>
-       <h2>Genres</h2>
-        <ul>
-          {movie.genres &&
-            movie.genres.map((genre) => (
-            <li key={genre.id}>{genre.name}</li>
-          ))}
-        </ul>
-      </ContainerGenres>
+  const cameBack = location.state?.from ?? '/';
+ return (
+    <>
+      <Link  to={cameBack}>
+        Go Back
+      </Link>
+      {loading ? (
+        'Loading...'
+      ) : (
+        <>
+          <div >
+            {data.poster_path ? (
+              <img
 
-      </ContainerTwo>
-      </ContainerG>
+                alt={data.original_title}
+                src={`https://image.tmdb.org/t/p/w500${data.poster_path}`}
+              />
+            ) : (
+             <p> Sorry </p>
+            )}
 
-      <ContainerInformation>
-          <h2>Additional Information</h2>
-          <ul>
-          <li>
-            <Link
-              to={`/movies/${movie.id}/cast`}
-              className={activeTab === 'cast' ? 'active' : ''}
-              onClick={() => setActiveTab('cast')}
-            >
-              Cast
-            </Link>
-          </li>
-          <li>
-            <Link
-              to={`/movies/${movie.id}/reviews`}
-              className={activeTab === 'reviews' ? 'active' : ''}
-              onClick={() => setActiveTab('reviews')}
-            >
-              Reviews
-            </Link>
-          </li>
-        </ul>
-      </ContainerInformation>
-    </ContainerMovieDetails>
+            <div >
+              <h1>
+                {data.original_title} ({getYear(data.release_date)})
+              </h1>
+              <p >
+                User Score: {~~(data.vote_average * 10)}%
+              </p>
+              <p >Overview</p>
+              <p>{data.overview}</p>
+              <p >Genres</p>
+              <p>{getGenres(data.genres)}</p>
+            </div>
+          </div>
+          <div>
+            <ul >
+              <li>
+                <Link to="cast" state={{ from: cameBack }}>
+                  <button >Cast</button>
+                </Link>
+              </li>
+              <li>
+                <Link to="reviews" state={{ from: cameBack }}>
+                  <button >Reviews</button>
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <Suspense fallback={<div>Loading subpage...</div>}>
+            <Outlet />
+          </Suspense>
+        </>
+      )}
+    </>
   );
 };
 
-MovieDetails.propTypes = {
-  prop1: PropTypes.string,
-  prop2: PropTypes.number
-};
-
 export default MovieDetails;
-
-
 
 
 /*import React, { useState, useEffect } from 'react';

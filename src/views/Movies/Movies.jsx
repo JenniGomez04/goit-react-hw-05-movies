@@ -1,56 +1,91 @@
-import PropTypes from 'prop-types';
-import React, { useState } from 'react';
+//import PropTypes from 'prop-types';
+
 import { searchMovies } from 'servicesApi/ApiMovies';
-import { ContainerInput } from './Movies.styled';
-import { Link } from 'react-router-dom'; // Importar Link
+//import { ContainerInput } from './Movies.styled';
+
+import { useState, useEffect } from 'react';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
 
 const Movies = () => {
-  const [searchTerm, setSearchTerm] = useState(''); // estado para almacenar la búsqueda del usuario
-  const [movies, setMovies] = useState([]); // estado para almacenar los resultados de la búsqueda
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const handleSearch = async (event) => {
-    event.preventDefault(); // evitar la recarga de la página al enviar el formulario
-    const results = await searchMovies(searchTerm); // llamar a la función searchMovies del otro componente y pasar la consulta del usuario
-    setMovies(results); // actualizar el estado con los resultados de la búsqueda
-    setSearchTerm(''); // actualizar el estado de searchTerm a una cadena vacía
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchQuery = searchParams.get('query');
+
+  const [query, setQuery] = useState(() => searchQuery || '');
+
+  const location = useLocation();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        setLoading(true);
+        const { results } = await searchMovies(searchQuery);
+        setData(results);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (searchQuery) {
+      getData();
+    }
+  }, [searchQuery]);
+
+  const handleChange = e => {
+    setQuery(e.target.value);
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    setSearchParams({ query: query });
   };
 
   return (
-    <ContainerInput>
-      <form onSubmit={handleSearch}>
-        <input
-          type="text"
-          placeholder="Search Movies"
-          value={searchTerm}
-          onChange={(event) => setSearchTerm(event.target.value)}
-        />
-        <button type="submit">Search</button>
-      </form>
+    <>
+      <div >
+        <h2 >Search movies:</h2>
+
+        <form onSubmit={handleSubmit} >
+          <input
+            value={query}
+            onChange={handleChange}
+            name="search"
+            type="text"
+            placeholder="Type here"
+
+          />
+          <button type="submit">
+            Search
+          </button>
+        </form>
+      </div>
       <ul>
-      {movies.map((movie) => (
-        <li key={movie.id}>
-        <Link to={`/moviesdetails/${movie.id}`}>{movie.title || movie.name}</Link>
-        </li>
-      ))}
+        {searchQuery ? (
+          loading ? (
+            'Loading...'
+          ) : data.length > 0 ? (
+            data.map(({ title, id }) => (
+              <li key={id} >
+                <Link state={{ from: location }} to={`/movies/${id}`}>
+                  {title}
+                </Link>
+              </li>
+            ))
+          ) : (
+            <p>
+              No movies with this title were found. Try entering another title
+            </p>
+          )
+        ) : (
+          <p ></p>
+        )}
       </ul>
-    </ContainerInput>
+    </>
   );
 };
 
-
-Movies.propTypes = {
-  searchTerm: PropTypes.string,
-  movies: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      title: PropTypes.string,
-      name: PropTypes.string,
-    })
-  ),
-};
-
-
 export default Movies;
-
-
-
