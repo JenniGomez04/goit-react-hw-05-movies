@@ -1,10 +1,7 @@
-//import PropTypes from 'prop-types';
-
 import { searchMovies } from 'servicesApi/ApiMovies';
-//import { ContainerInput } from './Movies.styled';
-
 import { useState, useEffect } from 'react';
 import { Link, useSearchParams, useLocation } from 'react-router-dom';
+import { ContainerMovies } from './Movies.styled';
 
 const Movies = () => {
   const [data, setData] = useState(null);
@@ -46,8 +43,8 @@ const Movies = () => {
 
   return (
     <>
-      <div >
-        <h2 >Search movies:</h2>
+      <ContainerMovies>
+        <h2 >Search Movies</h2>
 
         <form onSubmit={handleSubmit} >
           <input
@@ -55,14 +52,14 @@ const Movies = () => {
             onChange={handleChange}
             name="search"
             type="text"
-            placeholder="Type here"
+            placeholder="Movie Search Here"
 
           />
           <button type="submit">
             Search
           </button>
         </form>
-      </div>
+      </ContainerMovies>
       <ul>
         {searchQuery ? (
           loading ? (

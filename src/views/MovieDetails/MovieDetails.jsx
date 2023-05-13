@@ -1,6 +1,7 @@
 import { useParams, Link, Outlet, useLocation } from 'react-router-dom';
 import { useState, useEffect, Suspense } from 'react';
 import { getMovieDetails } from '../../servicesApi/ApiMovies';
+import { GoBack, ContainerMovieDetails, ContainerDetails, ContainerInformation } from './MovieDetails.styled';
 
 
 const MovieDetails = () => {
@@ -39,14 +40,16 @@ const MovieDetails = () => {
   const cameBack = location.state?.from ?? '/';
  return (
     <>
-      <Link  to={cameBack}>
-        Go Back
+    <GoBack>
+      <Link  to={cameBack} className="go-back-link">
+      ↶ Go Back
       </Link>
+      </GoBack>
       {loading ? (
         'Loading...'
       ) : (
         <>
-          <div >
+          <ContainerMovieDetails >
             {data.poster_path ? (
               <img
 
@@ -57,33 +60,33 @@ const MovieDetails = () => {
              <p> Sorry </p>
             )}
 
-            <div >
+            <ContainerDetails >
               <h1>
                 {data.original_title} ({getYear(data.release_date)})
               </h1>
               <p >
                 User Score: {~~(data.vote_average * 10)}%
               </p>
-              <p >Overview</p>
+              <h3>Overview</h3>
               <p>{data.overview}</p>
-              <p >Genres</p>
+              <h3>Genres</h3>
               <p>{getGenres(data.genres)}</p>
-            </div>
-          </div>
-          <div>
+            </ContainerDetails>
+          </ContainerMovieDetails>
+          <ContainerInformation>
             <ul >
               <li>
                 <Link to="cast" state={{ from: cameBack }}>
-                  <button >Cast</button>
+                 Cast
                 </Link>
               </li>
               <li>
                 <Link to="reviews" state={{ from: cameBack }}>
-                  <button >Reviews</button>
+                  Reviews
                 </Link>
               </li>
             </ul>
-          </div>
+          </ContainerInformation>
           <Suspense fallback={<div>Loading subpage...</div>}>
             <Outlet />
           </Suspense>
@@ -94,52 +97,3 @@ const MovieDetails = () => {
 };
 
 export default MovieDetails;
-
-
-/*import React, { useState, useEffect } from 'react';
-import { getMovieDetails } from 'servicesApi/ApiMovies';
-import { useParams, NavLink } from 'react-router-dom';
-
-const MovieDetails = () => {
-  const { movieId } = useParams(); // obtener el parámetro de la URL correspondiente al ID de la película
-  const [movie, setMovie] = useState(null); // estado para almacenar la información de la película
-
-  useEffect(() => {
-    const fetchMovieDetails = async () => {
-      const movieData = await getMovieDetails(movieId); // obtener la información detallada de la película a través del endpoint getMovieDetails
-      setMovie(movieData); // actualizar el estado con la información de la película
-    };
-    fetchMovieDetails();
-  }, [movieId]);
-
-  if (!movie) return <div>Loading...</div>;
-
-  return (
-    <div>
-      <h1>{movie.title}</h1>
-      <p>{movie.overview}</p>
-      <img
-        src={`https://image.tmdb.org/t/p/w200/${movie.poster_path}`}
-        alt={movie.title}
-      />
-      <ul>
-        {movie.genres &&
-          movie.genres.map((genre) => (
-            <li key={genre.id}>{genre.name}</li>
-          ))}
-      </ul>
-
-      <div>
-        <NavLink to={`/movies/${movieId}/reviews`}>Reviews</NavLink>
-        <NavLink to={`/movies/${movieId}/cast`}>Cast</NavLink>
-      </div>
-
-    </div>
-
-  );
-};
-
-
-
-export default MovieDetails;*/
-

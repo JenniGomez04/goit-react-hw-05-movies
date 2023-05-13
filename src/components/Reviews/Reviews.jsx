@@ -1,30 +1,28 @@
-
+import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'servicesApi/ApiMovies';
 import { ContainerReviews } from './Reviews.styled';
 
-
 const Reviews = () => {
-  const { id } = useParams();
+  const { movieId } = useParams();
   const [reviews, setReviews] = useState(null);
   const [loading, setLoading] = useState(true);
 
 
-
   useEffect(() => {
     const fetchMovieReviews = async () => {
-      const movieReviews = await getMovieReviews(id);
+      const movieReviews = await getMovieReviews(movieId);
       setReviews(movieReviews);
     };
     fetchMovieReviews();
-  }, [id]);
+  }, [movieId]);
 
   useEffect(() => {
     const getData = async () => {
       try {
         setLoading(true);
-        const { results } = await getMovieReviews(id);
+        const { results } = await getMovieReviews(movieId);
         setReviews(results);
         setLoading(false);
       } catch (error) {
@@ -34,7 +32,7 @@ const Reviews = () => {
       }
     };
     getData();
-  }, [id]);
+  }, [movieId]);
 
 
   return (
@@ -59,5 +57,8 @@ const Reviews = () => {
 };
 
 
-export default Reviews;
+Reviews.propTypes = {
+  movieId: PropTypes.string,
+};
 
+export default Reviews;
